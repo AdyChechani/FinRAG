@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinRAG Chat</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="chat-container">
+        <h1>FinRAG</h1>
+        <div class="chat-box" id="chat-box"></div>
+        <input type="text" id="query-input" placeholder="Enter your query here...">
+        <button onclick="sendQuery()">Send</button>
+    </div>
+
+    <script>
+        function sendQuery() {
+            let userQuery = document.getElementById('query-input').value;
+            let chatBox = document.getElementById('chat-box');
+
+            fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query: userQuery }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                chatBox.innerHTML += '<p><b>You:</b> ' + userQuery + '</p>';
+                chatBox.innerHTML += '<p><b>AI:</b> ' + data.response + '</p>';
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
