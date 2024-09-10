@@ -18,7 +18,15 @@ FinRAG leverages Retrieval Augmented Generation (RAG) to provide comprehensive a
 
 ---
 
-### Data Sources
-#### Financial Statements and Reports:
-- MCA (Ministry of Corporate Affairs) for financial statements
-- YahooFinance for market data 
+## Steps for RAG
+1. Indexing
+    - Parsing
+    - Chunking
+    - Create Embeddings
+    - Upsert
+2. Retrieval
+    - Query rewriting
+    - Reranking contexts
+    - (Web Retrival)
+3. Generation
+    - Check factualness (if the output does not answers the query, redo from retrieval)
