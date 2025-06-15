@@ -1,5 +1,6 @@
 import os
 import dotenv
+import certifi
 dotenv.load_dotenv()
 
 from pymongo import MongoClient
@@ -10,12 +11,16 @@ from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.output_parsers import StrOutputParser
 
 
-os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY")
+os.environ["LANGCHAIN_API_KEY"] = str(os.getenv("LANGCHAIN_API_KEY"))
 os.environ["LANGCHAIN_ENDPOINT"] = "https://api.smith.langchain.com"
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_PROJECT"] = "FinRAG"
 
-client = MongoClient(os.getenv('MONGO_URI'))
+client = MongoClient(
+    os.getenv('MONGO_URI'),
+    tls=True,  # Enable TLS/SSL
+    tlsCAFile=certifi.where(),
+)
 db_name = 'FinRAG'
 collection_name = 'Vector-Store-FinRAG'
 collection = client[db_name][collection_name]

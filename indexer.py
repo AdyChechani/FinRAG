@@ -1,4 +1,5 @@
 import os
+import certifi
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -15,7 +16,7 @@ allowed_filetypes = ['pdf', 'doc', 'docx', 'txt', 'xlsx', 'csv', 'ppt', 'pptx', 
 
 # A smart parser for files
 parser = LlamaParse(
-    api_key=os.getenv('LLAMA_INDEX'),
+    api_key=str(os.getenv('LLAMA_INDEX')),
     result_type="markdown",
     num_workers=4,
     verbose=True,
@@ -71,7 +72,11 @@ def find_file(source : str,
     return len(query_result) > 0
 
 
-client = MongoClient(os.getenv('MONGO_URI'))
+client = MongoClient(
+    os.getenv('MONGO_URI'),
+    tls=True,  # Enable TLS/SSL
+    tlsCAFile=certifi.where(),
+)
 try:
     client.admin.command('ping')
     print('Pinged you deployment. You successfully connected to MongoDB!')
@@ -82,7 +87,7 @@ collection_name = 'Vector-Store-FinRAG'
 collection = client[db_name][collection_name]
 
 embeddings = GoogleGenerativeAIEmbeddings(model='models/embedding-001',
-                                          google_api_key=os.getenv('GOOGLE_API_KEY'),
+                                          google_api_key=str(os.getenv('GOOGLE_API_KEY')),
                                           task_type='retrieval_document')
 
 data_directory = 'data'
